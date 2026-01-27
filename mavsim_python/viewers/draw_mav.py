@@ -14,7 +14,7 @@ from tools.rotations import euler_to_rotation
 from tools.drawing import rotate_points, translate_points, points_to_mesh
 
 
-class DrawMAV:
+class DrawMav:
     def __init__(self, state, window, scale=10):
         """
         Draw the MAV.
@@ -34,7 +34,7 @@ class DrawMAV:
         R_bi = euler_to_rotation(state.phi, state.theta, state.psi)
         # convert North-East Down to East-North-Up for rendering
         self.R_ned = np.array([[0, 1, 0], [1, 0, 0], [0, 0, -1]])
-        # get points that define the non-rotated, non-translated spacecraft and the mesh colors
+        # get points that define the non-rotated, non-translated M and the mesh colors
         self.sc_points, self.sc_index, self.sc_meshColors = self.get_sc_points()
         self.sc_body = self.add_object(
             self.sc_points,
@@ -42,7 +42,7 @@ class DrawMAV:
             self.sc_meshColors,
             R_bi,
             sc_position)
-        window.addItem(self.sc_body)  # add spacecraft to plot     
+        window.addItem(self.sc_body)  # add M to plot     
 
     def update(self, state):
         sc_position = np.array([[state.north], [state.east], [-state.altitude]])  # NED coordinates
@@ -81,39 +81,57 @@ class DrawMAV:
 
     def get_sc_points(self):
         """"
-            Points that define the spacecraft, and the colors of the triangular mesh
-            Define the points on the spacecraft following information in Learning Suite Project Files
+            Points that define the M, and the colors of the triangular mesh
+            Define the points on the MAV following information in Learning Suite Project Files
         """
+
+        unit_length = 1
+        fuse_h = unit_length
+        fuse_w = unit_length
+        fuse_l1 = unit_length * 2
+        fuse_l2 = unit_length
+        fuse_l3 = unit_length * 4
+        wing_l = unit_length
+        wing_w = unit_length * 6
+        tail_h = unit_length
+        tail_l = unit_length
+        tail_w = unit_length * 2
+
         # points are in XYZ coordinates
-        #   define the points on the spacecraft according to Learning Suite Project Files
+        #   define the points on the M according to Learning Suite Project Files
         points = self.unit_length * np.array([
-            [1, 1, 0],  # point 1 [0]
-            [1, -1, 0],  # point 2 [1]
-            [-1, -1, 0],  # point 3 [2]
-            [-1, 1, 0],  # point 4 [3]
-            [1, 1, -2],  # point 5 [4]
-            [1, -1, -2],  # point 6 [5]
-            [-1, -1, -2],  # point 7 [6]
-            [-1, 1, -2],  # point 8 [7]
-            [1.5, 1.5, 0],  # point 9 [8]
-            [1.5, -1.5, 0],  # point 10 [9]
-            [-1.5, -1.5, 0],  # point 11 [10]
-            [-1.5, 1.5, 0]  # point 12 [11]
+            [fuse_l1, 0, 0],  # point 1 [0]
+            [0, fuse_w/2, -fuse_h/2],  # point 2 [1]
+            [0, -fuse_w/2, -fuse_h/2],  # point 3 [2]
+            [0, -fuse_w/2, fuse_h/2],  # point 4 [3]
+            [0, fuse_w/2, fuse_h/2],  # point 5 [4]
+            [-fuse_l3,0,0],  # point 6 [5]
+            [0, wing_w/2, 0],  # point 7 [6]
+            [-wing_l, wing_w/2, 0],  # point 8 [7]
+            [-wing_l, -wing_w/2, 0],  # point 9 [8]
+            [0, -wing_w/2, 0],  # point 10 [9]
+            [-fuse_l3+tail_l,tail_w/2,0],  # point 11 [10]
+            [-fuse_l3,tail_w/2,0], # point 12 [11]
+            [-fuse_l3,tail_w/2,0], # point 13 [11]
+            [-fuse_l3+tail_l,tail_w/2,0],  # point 14 [11]
+            [-fuse_l3+tail_l,0,0], # point 15 [11]
+            [-fuse_l3,0,-tail_h]
             ]).T
         # point index that defines the mesh
         index = np.array([
-            [0, 1, 5],  # front 1
-            [0, 5, 4],  # front 2
-            [3, 2, 6],  # back 1
-            [3, 6, 7],  # back 2
-            [0, 4, 7],  # right 1
-            [0, 7, 3],  # right 2
-            [1, 5, 6],  # left 1
-            [1, 6, 2],  # left 2
-            [4, 5, 6],  # top 1
-            [4, 6, 7],  # top 2
-            [8, 9, 10],  # bottom 1
-            [8, 10, 11],  # bottom 2  
+            [0, 1, 2],  # front 1
+            [0, 2, 3],  # front 2
+            [0, 1, 4],  # front 3
+            [0, 3, 4],  # front 4
+            [2, 3, 5],  # right fuselage
+            [3, 4, 5],  # bottom fuselage
+            [4, 1, 5],  # left fuselage
+            [1, 2, 5],  # top fuselage
+            [6,7,8],
+            [9,6,8],  # wing
+            [10,11,13],  # tailwing
+            [12,11,13],
+            [14,5,15],  # bottom 1
             ])
         #   define the colors for each face of triangular mesh
         red = np.array([1., 0., 0., 1])

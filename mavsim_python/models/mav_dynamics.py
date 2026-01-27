@@ -89,29 +89,101 @@ class MavDynamics:
         ##### TODO #####
         
         # Extract the States
-        # north = state.item(0)
+        north = state.item(0)
+        east = state.item(1)
+        down = state.item(2)
+        u = state.item(3)
+        v = state.item(4)
+        w = state.item(5)
+        e0 = state.item(6)
+        e1 = state.item(7)
+        e2 = state.item(8)
+        e3 = state.item(9)
+        p = state.item(10)
+        q = state.item(11)
+        r = state.item(12)
 
+        # e = np.array([e0,e1,e2,e3])
+        # R = quaternion_to_rotation(e)
+        # phi = np.atan2(2*(e0*e1+e2*e3),(e0**2+e3**2-e1**2-e2**2))
+        # theta = np.asin(2*(e0*e2-e1*e3))
+        # psi = np.atan2(2*(e0*e3+e1*e2),(e0**2+e1**2-e2**2-e3**2))
+        
         # Extract Forces/Moments
-        # fx = forces_moments.item(0)
+        fx = forces_moments.item(0)
+        fy = forces_moments.item(1)
+        fz = forces_moments.item(2)
+        Mx = forces_moments.item(3)
+        My = forces_moments.item(4)
+        Mz = forces_moments.item(5)
 
         # Position Kinematics
-        # pos_dot = 
+        # angles = np.array([[np.cos(theta)*np.cos(psi), np.sin(phi)*np.sin(theta)*np.cos(psi)-np.cos(phi)*np.sin(psi), np.cos(phi)*np.sin(theta)*np.cos(psi)+np.sin(phi)*np.sin(psi)],
+        #                     [np.cos(theta)*np.sin(psi), np.sin(phi)*np.sin(theta)*np.sin(psi)+np.cos(phi)*np.cos(psi), np.cos(phi)*np.sin(theta)*np.sin(psi)-np.sin(phi)*np.cos(psi)],
+        #                     [-np.sin(theta), np.sin(phi)*np.cos(theta), np.cos(phi)*np.cos(theta)]])
+        angles = np.array([[e1**2+e0**2-e2**2-e3**2, 2*(e1*e2-e3*e0),2*(e1*e3+e2*e0)],
+                           [2*(e1*e2+e3*e0),e2**2+e0**2-e1**2-e3**2,2*(e2*e3-e1*e0)],
+                           [2*(e1*e3-e2*e0),2*(e2*e3+e1*e0),e3**2+e0**2-e1**2-e2**2]])
+        pos_dot = angles @ np.array([[u],[v],[w]])
 
         # Position Dynamics
-        # u_dot = 
+        first = np.array([[r*v-q*w],
+                          [p*w-r*u],
+                          [q*u-p*v]])
+        forces = 1/MAV.mass*np.array([[fx],
+                               [fy],
+                               [fz]])
+        u_dot = first + forces
 
 
         # rotational kinematics
-        # e0_dot =
-
-
-        # rotatonal dynamics
-        # p_dot = 
+        # e0_dot = np.array([[1, np.sin()*np.tan(theta), np.cos(phi)*np.tan(theta)],
+        #                    [0, np.cos(phi), -np.sin(phi)],
+        #                    [0, np.sin(phi)/np.cos(theta), np.cos(phi)/np.cos(theta)]])
         
+        #quaternion method, must normalize after each rk4 step
+        matrix = 0.5*np.array([[0,-p,-q,-r],
+                               [p,0,r,-q],
+                               [q,-r,0,p],
+                               [r,q,-p,0]])
+        es = np.array([[e0],[e1],[e2],[e3]])
+        e0_dot =matrix @ es
+        
+        Jx = MAV.Jx
+        Jy = MAV.Jy
+        Jz = MAV.Jz
+        Jxz =  MAV.Jxz
+        
+        Ro = Jx*Jz-Jxz**2
+        Ro1 = Jxz*(Jx-Jy+Jz)/(Ro)
+        Ro2 = (Jz*(Jz-Jy)+Jxz**2)/Ro
+        Ro3 = Jz/Ro
+        Ro4 = Jxz/Ro
+        Ro5 = (Jz-Jx)/Jy
+        Ro6 = Jxz/Jy
+        Ro7 = ((Jx-Jy)*Jx+Jxz**2)/Ro
+        Ro8 = Jx/Ro
+        # rotatonal dynamics
+        n = Mz
+        m = My
+        el = Mx
+        prt1 = np.array([[Ro1*p*q-Ro2*q*r],
+                          [Ro5*p*r-Ro6*(p**2-r**2)],
+                          [Ro7*p*q-Ro1*q*r]])
+        prt2 = np.array([[Ro3*el + Ro4*n],
+                         [m/Jy],
+                         [Ro4*el + Ro8*n]])
+        p_dot = prt1 + prt2
 
         # collect the derivative of the states
         # x_dot = np.array([[north_dot, east_dot,... ]]).T
-        x_dot = np.array([[0,0,0,0,0,0,0,0,0,0,0,0,0]]).T
+        # x_dot = np.array([[0,0,0,0,0,0,0,0,0,0,0,0,0]]).T
+        x_dot = np.array([
+    pos_dot[0], pos_dot[1], pos_dot[2],
+    u_dot[0], u_dot[1], u_dot[2],
+    e0_dot[0], e0_dot[1], e0_dot[2], e0_dot[3],
+    p_dot[0], p_dot[1], p_dot[2]
+    ]).reshape(13, 1)
         return x_dot
 
     def _update_true_state(self):
@@ -140,3 +212,8 @@ class MavDynamics:
         self.true_state.bz = 0
         self.true_state.camera_az = 0
         self.true_state.camera_el = 0
+    
+    # def _derivatives(self, state, forces_moments):
+        
+    #     while True: #for _ in range():
+    #         self._rk4_step(forces_moments)

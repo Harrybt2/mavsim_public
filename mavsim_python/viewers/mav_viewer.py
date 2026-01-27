@@ -11,6 +11,8 @@ mavsim_python: mav viewer (for chapter 2)
 import pyqtgraph.opengl as gl
 import pyqtgraph.Vector as Vector
 from viewers.draw_mav import DrawMav
+# from draw_mav import DrawMav
+
 # from viewers.draw_mav_stl import DrawMav
 from time import time
 
