@@ -1,14 +1,22 @@
 """
 various tools to be used in mavPySim
 """
-import numpy as np
-import scipy.linalg as linalg
 
-def quaternion_to_euler(quaternion):
+# typing
+import numpy.typing as npt
+
+# 3rd party
+import numpy as np
+
+def quaternion_to_euler(quaternion: npt.NDArray[np.float64]) -> tuple[float]:
     """
-    converts a quaternion attitude to an euler angle attitude
-    :param quaternion: the quaternion to be converted to euler angles in a np.matrix
-    :return: the euler angle equivalent (phi, theta, psi) in a np.array
+    Converts a quaternion attitude to an euler angle attitude
+
+    Args:
+        quaternion: `size == 4` quaternion vector
+
+    Returns:
+        tuple of euler angles
     """
     e0 = quaternion.item(0)
     e1 = quaternion.item(1)
@@ -16,15 +24,23 @@ def quaternion_to_euler(quaternion):
     e3 = quaternion.item(3)
     phi = np.arctan2(2.0 * (e0 * e1 + e2 * e3), e0**2.0 + e3**2.0 - e1**2.0 - e2**2.0)
     # theta = np.arcsin(2.0 * (e0 * e2 - e1 * e3))
-    theta = -np.pi/2.0 + np.arctan2(np.sqrt(1+2.0*(e0*e2-e1*e3)), np.sqrt(1-2.0*(e0*e2-e1*e3)))
+    theta = -np.pi/2.0 + 2*np.arctan2(np.sqrt(1+2.0*(e0*e2-e1*e3)), np.sqrt(1-2.0*(e0*e2-e1*e3)))
     psi = np.arctan2(2.0 * (e0 * e3 + e1 * e2), e0**2.0 + e1**2.0 - e2**2.0 - e3**2.0)
     return phi, theta, psi
 
-def euler_to_quaternion(phi, theta, psi):
+def euler_to_quaternion(
+    phi : float,
+    theta : float,
+    psi : float,
+) -> npt.NDArray[np.float64]:
     """
     Converts an euler angle attitude to a quaternian attitude
-    :param euler: Euler angle attitude in a np.matrix(phi, theta, psi)
-    :return: Quaternian attitude in np.array(e0, e1, e2, e3)
+
+    Args:
+        param euler: Euler angle attitude in three floats, phi, theta, psi
+
+    Returns:
+        Quaternian attitude in 2d np.array
     """
 
     e0 = np.cos(psi/2.0) * np.cos(theta/2.0) * np.cos(phi/2.0) + np.sin(psi/2.0) * np.sin(theta/2.0) * np.sin(phi/2.0)
@@ -32,11 +48,31 @@ def euler_to_quaternion(phi, theta, psi):
     e2 = np.cos(psi/2.0) * np.sin(theta/2.0) * np.cos(phi/2.0) + np.sin(psi/2.0) * np.cos(theta/2.0) * np.sin(phi/2.0)
     e3 = np.sin(psi/2.0) * np.cos(theta/2.0) * np.cos(phi/2.0) - np.cos(psi/2.0) * np.sin(theta/2.0) * np.sin(phi/2.0)
 
+    # ----------------------------------------------
+    # an attitude (rotation) quaternion needs to be verifiably unit length
+
+    # quat_vec = np.array([e0, e1, e2, e3])
+    # mag_quat_vec = np.linalg.norm(quat_vec)
+
+    # if np.abs(1 - mag_quat_vec) <= 1e-14:
+    #     return np.array([[e0],[e1],[e2],[e3]])
+    # elif mag_quat_vec >= 1e-14:
+    #     qnorm = quat_vec / mag_quat_vec
+    #     return np.atleast_2d(qnorm).T
+    # else:
+    #     print("Error: zero quaternion vector!")
+    #     raise Exception('quaternion magnitude is zero')
+    # #
+
     return np.array([[e0],[e1],[e2],[e3]])
 
-def euler_to_rotation(phi, theta, psi):
+def euler_to_rotation(
+    phi: float,
+    theta: float,
+    psi: float,
+) -> npt.NDArray[np.float64]:
     """
-    Converts euler angles to rotation matrix (R_b^i)
+    Converts euler angles to 3-2-1 rotation matrix (R_b^i  **b2i = transpose of the book**)
     """
     c_phi = np.cos(phi)
     s_phi = np.sin(phi)
@@ -64,9 +100,9 @@ def euler_to_rotation(phi, theta, psi):
 
     return R
 
-def quaternion_to_rotation(quaternion):
+def quaternion_to_rotation(quaternion: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
     """
-    converts a quaternion attitude to a rotation matrix
+    converts a quaternion attitude to a 3-2-1 rotation matrix (R_b^i  **b2i = transpose of the book**)
     """
     e0 = quaternion.item(0)
     e1 = quaternion.item(1)
@@ -80,9 +116,9 @@ def quaternion_to_rotation(quaternion):
 
     return R
 
-def rotation_to_quaternion(R):
+def rotation_to_quaternion(R: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
     """
-    converts a rotation matrix to a unit quaternion
+    converts a 3-2-1 R_b^i (**b2i = transpose of the book!**) rotation matrix to a unit quaternion
     """
     r11 = R[0][0]
     r12 = R[0][1]
@@ -94,6 +130,7 @@ def rotation_to_quaternion(R):
     r32 = R[2][1]
     r33 = R[2][2]
 
+    # can't the determinant be used to allow removal of all the if statements?
     tmp=r11+r22+r33
     if tmp>0:
         e0 = 0.5*np.sqrt(1+tmp)
@@ -120,34 +157,33 @@ def rotation_to_quaternion(R):
 
     return np.array([[e0], [e1], [e2], [e3]])
 
-def rotation_to_euler(R):
+def rotation_to_euler(R_b2i: npt.NDArray[np.float64]) -> tuple[float]:
     """
-    converts a rotation matrix to euler angles
+    converts a 3-2-1 R_b^i (**b2i = transpose of the book!**) rotation matrix to euler angles
     """
+    # alternate method
     # quat = rotation_to_quaternion(R)
     # phi, theta, psi = quaternion_to_euler(quat)
-    if abs(R[2][0])!=1:
-        th1 = -np.arcsin(R[2][0])
-        #th2 = pi - th1
-        phi1 = np.arctan2(R[2][1]/np.cos(th1), R[2][2]/np.cos(th1))
-        #phi2 = arctan2(R[2][1]/cos(th2), R[2][2]/cos(th2))
-        psi1 = np.arctan2(R[1][0]/np.cos(th1), R[0][0]/np.cos(th1))
-        #psi2 = arctan2(R[1][0]/cos(th2), R[0][0]/cos(th2))
-        # both solutions (phi1, theta1, psi1) and (phi2, theta2, psi2) are correct
-        theta = th1
-        phi = phi1
-        psi = psi1
-    else:
-        psi = 0
-        if R[2][0]==-1:
-            theta = np.pi/2
-            phi = psi + np.arctan2(R[0][1], R[0][2])
-        else:
-            theta = -np.pi/2
-            phi = -psi + np.arctan2(-R[0][1], -R[0][2])
+
+    # --------------------------
+
+    # arctan2 is more stable than arcsin !!
+
+    # equivalently poor (only uses one number as source):
+    # thetas = np.arcsin(-rpy_i2b[2,0])
+    # theta0 = np.arctan2(-rpy_i2b[2,0], np.sqrt(1-rpy_i2b[2,0]**2))
+
+    # equivalently better behaved (uses two numbers as source):
+    # theta2 = np.arctan2(-rpy_i2b[2,0], np.sqrt(rpy_i2b[0,0]**2 + rpy_i2b[1,0]**2))
+    # theta1 = np.arctan2(-rpy_i2b[2,0], np.sqrt(rpy_i2b[2,1]**2 + rpy_i2b[2,2]**2))
+
+    phi     = np.arctan2(R_b2i[2,1], R_b2i[2,2])
+    theta   = np.arctan2(-R_b2i[2,0], np.sqrt(R_b2i[0,0]**2 + R_b2i[1,0]**2))
+    psi     = np.arctan2(R_b2i[1,0], R_b2i[0,0])
+
     return phi, theta, psi
 
-def hat(omega):
+def hat(omega: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
     """
     vector to skew symmetric matrix associated with cross product
     """
