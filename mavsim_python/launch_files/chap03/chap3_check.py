@@ -117,36 +117,10 @@ forces_moments = np.array([[
     0, 14, 0
 ]]).T
 mav = MavDynamics(SIM.ts_simulation)
-x_dot = mav._derivatives(state, forces_moments)
+x_dot = mav._f(state, forces_moments)
 
-print("State Derivatives: Case 2")
-print("north_dot: ", x_dot[0])
-print("east_dot: ", x_dot[1])
-print("down_dot: ", x_dot[2])
-print("u_dot: ", x_dot[3])
-print("v_dot: " , x_dot[4])
-print("w_dot: " , x_dot[5])
-print("e0_dot: " , x_dot[6])
-print("e1_dot: " , x_dot[7])
-print("e2_dot: " , x_dot[8])
-print("e3_dot: " , x_dot[9])
-print("p_dot: " , x_dot[10])
-print("q_dot: " , x_dot[11])
-print("r_dot: " , x_dot[12])
-
-# State Derivatives: Case 2
-# north_dot:  [0.08746356]
-# east_dot:  [-1.96793003]
-# down_dot:  [2.79883382]
-# u_dot:  [9.90909091]
-# v_dot:  [0.45454545]
-# w_dot:  [0.]
-# e0_dot:  [-0.3]
-# e1_dot:  [0.]
-# e2_dot:  [-0.9]
-# e3_dot:  [1.5]
-# p_dot:  [0.]
-# q_dot:  [13.28951542]
-# r_dot:  [0.]
-
-
+# print("State Derivatives: Case 2")
+print(f"{ "x_ned_dot":>{ckfns.lpad}}: {ckfns.ck_err(xdot_ned_c02,  x_dot[:3,   0])}")
+print(f"{ "x_uvw_dot":>{ckfns.lpad}}: {ckfns.ck_err(xdot_uvw_c02,  x_dot[3:6,  0])}")
+print(f"{"x_quat_dot":>{ckfns.lpad}}: {ckfns.ck_err(xdot_quat_c02, x_dot[6:10, 0])}")
+print(f"{ "x_ned_dot":>{ckfns.lpad}}: {ckfns.ck_err(xdot_pqr_c02,  x_dot[10:,  0])}\n")
