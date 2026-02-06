@@ -24,7 +24,7 @@ def quaternion_to_euler(quaternion: npt.NDArray[np.float64]) -> tuple[float]:
     e3 = quaternion.item(3)
     phi = np.arctan2(2.0 * (e0 * e1 + e2 * e3), e0**2.0 + e3**2.0 - e1**2.0 - e2**2.0)
     # theta = np.arcsin(2.0 * (e0 * e2 - e1 * e3))
-    theta = -np.pi/2.0 + 2*np.arctan2(np.sqrt(1+2.0*(e0*e2-e1*e3)), np.sqrt(1-2.0*(e0*e2-e1*e3)))
+    theta = -np.pi/2.0 + 2*np.arctan2(np.sqrt(1+2.0*(e0*e2-e1*e3)), np.sqrt(1-2.0*(e0*e2-e1*e3)))   # (added the 2)
     psi = np.arctan2(2.0 * (e0 * e3 + e1 * e2), e0**2.0 + e1**2.0 - e2**2.0 - e3**2.0)
     return phi, theta, psi
 
@@ -112,7 +112,7 @@ def quaternion_to_rotation(quaternion: npt.NDArray[np.float64]) -> npt.NDArray[n
     R = np.array([[e1 ** 2.0 + e0 ** 2.0 - e2 ** 2.0 - e3 ** 2.0, 2.0 * (e1 * e2 - e3 * e0), 2.0 * (e1 * e3 + e2 * e0)],
                   [2.0 * (e1 * e2 + e3 * e0), e2 ** 2.0 + e0 ** 2.0 - e1 ** 2.0 - e3 ** 2.0, 2.0 * (e2 * e3 - e1 * e0)],
                   [2.0 * (e1 * e3 - e2 * e0), 2.0 * (e2 * e3 + e1 * e0), e3 ** 2.0 + e0 ** 2.0 - e1 ** 2.0 - e2 ** 2.0]])
-    R = R/linalg.det(R)
+    R = R/np.linalg.det(R)
 
     return R
 

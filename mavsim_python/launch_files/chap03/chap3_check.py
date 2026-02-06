@@ -76,7 +76,7 @@ xdot_pqr_c02 = np.array([
 # ======================================
 # ======================================
 ### 1st Case ###
-print(f"\n\t{tools.color.cyan("### 1st Case ###")}\n")
+print(f"\n\t{tools.color.cyan('### 1st Case ###')}\n")
 
 
 state = np.array([[
@@ -94,16 +94,16 @@ mav = MavDynamics(SIM.ts_simulation)
 x_dot = mav._f(state, forces_moments)
 
 # print("State Derivatives: Case 1")
-print(f"{ "x_ned_dot":>{ckfns.lpad}}: {ckfns.ck_err(xdot_ned_c01,  x_dot[:3,   0])}")
-print(f"{ "x_uvw_dot":>{ckfns.lpad}}: {ckfns.ck_err(xdot_uvw_c01,  x_dot[3:6,  0])}")
-print(f"{"x_quat_dot":>{ckfns.lpad}}: {ckfns.ck_err(xdot_quat_c01, x_dot[6:10, 0])}")
-print(f"{ "x_ned_dot":>{ckfns.lpad}}: {ckfns.ck_err(xdot_pqr_c01,  x_dot[10:,  0])}\n")
-
+print(f"{ 'x_ned_dot':>{ckfns.lpad}}: {ckfns.ck_err(xdot_ned_c01,  x_dot[:3,   0])}")
+print(f"{ 'x_uvw_dot':>{ckfns.lpad}}: {ckfns.ck_err(xdot_uvw_c01,  x_dot[3:6,  0])}")
+print(f"{'x_quat_dot':>{ckfns.lpad}}: {ckfns.ck_err(xdot_quat_c01, x_dot[6:10, 0])}")
+print(f"{ 'x_pqr_dot':>{ckfns.lpad}}: {ckfns.ck_err(xdot_pqr_c01,  x_dot[10:,  0])}\n")
 
 # ======================================
 # ======================================
 ### 2nd Case ###
-print(f"\t{tools.color.cyan("### 2nd Case ###")}\n")
+print(f"\n\t{tools.color.cyan('### 2nd Case ###')}\n")
+
 
 state = np.array([[
     5, 2, -20,
@@ -120,7 +120,7 @@ mav = MavDynamics(SIM.ts_simulation)
 x_dot = mav._f(state, forces_moments)
 
 # print("State Derivatives: Case 2")
-print(f"{ "x_ned_dot":>{ckfns.lpad}}: {ckfns.ck_err(xdot_ned_c02,  x_dot[:3,   0])}")
-print(f"{ "x_uvw_dot":>{ckfns.lpad}}: {ckfns.ck_err(xdot_uvw_c02,  x_dot[3:6,  0])}")
-print(f"{"x_quat_dot":>{ckfns.lpad}}: {ckfns.ck_err(xdot_quat_c02, x_dot[6:10, 0])}")
-print(f"{ "x_ned_dot":>{ckfns.lpad}}: {ckfns.ck_err(xdot_pqr_c02,  x_dot[10:,  0])}\n")
+print(f"{ 'x_ned_dot':>{ckfns.lpad}}: {ckfns.ck_err(xdot_ned_c02,  x_dot[:3,   0])}")
+print(f"{ 'x_uvw_dot':>{ckfns.lpad}}: {ckfns.ck_err(xdot_uvw_c02,  x_dot[3:6,  0])}")
+print(f"{'x_quat_dot':>{ckfns.lpad}}: {ckfns.ck_err(xdot_quat_c02, x_dot[6:10, 0])}")
+print(f"{ 'x_pqr_dot':>{ckfns.lpad}}: {ckfns.ck_err(xdot_pqr_c02,  x_dot[10:,  0])}\n")

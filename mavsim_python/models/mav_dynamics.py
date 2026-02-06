@@ -87,7 +87,9 @@ class MavDynamics:
         for the dynamics xdot = f(x, u), returns f(x, u)
         """
         ##### TODO #####
-        
+
+        m = MAV.mass
+        g = MAV.gravity
         # Extract the States
         north = state.item(0)
         east = state.item(1)
@@ -103,8 +105,8 @@ class MavDynamics:
         q = state.item(11)
         r = state.item(12)
 
-        # e = np.array([e0,e1,e2,e3])
-        # R = quaternion_to_rotation(e)
+        e = np.array([e0,e1,e2,e3])
+        R = quaternion_to_rotation(e)
         # phi = np.atan2(2*(e0*e1+e2*e3),(e0**2+e3**2-e1**2-e2**2))
         # theta = np.asin(2*(e0*e2-e1*e3))
         # psi = np.atan2(2*(e0*e3+e1*e2),(e0**2+e1**2-e2**2-e3**2))
@@ -117,14 +119,24 @@ class MavDynamics:
         My = forces_moments.item(4)
         Mz = forces_moments.item(5)
 
-        # Position Kinematics
+        
+
+        # # Position Kinematics
         # angles = np.array([[np.cos(theta)*np.cos(psi), np.sin(phi)*np.sin(theta)*np.cos(psi)-np.cos(phi)*np.sin(psi), np.cos(phi)*np.sin(theta)*np.cos(psi)+np.sin(phi)*np.sin(psi)],
         #                     [np.cos(theta)*np.sin(psi), np.sin(phi)*np.sin(theta)*np.sin(psi)+np.cos(phi)*np.cos(psi), np.cos(phi)*np.sin(theta)*np.sin(psi)-np.sin(phi)*np.cos(psi)],
         #                     [-np.sin(theta), np.sin(phi)*np.cos(theta), np.cos(phi)*np.cos(theta)]])
+
+
+        # normE = np.sqrt(e0**2+e1**2+e2**2+e3**2)
+        # e0 = e0/normE
+        # e1 = e1/normE
+        # e2 = e2/normE
+        # e3 = e3/normE
+
         angles = np.array([[e1**2+e0**2-e2**2-e3**2, 2*(e1*e2-e3*e0),2*(e1*e3+e2*e0)],
                            [2*(e1*e2+e3*e0),e2**2+e0**2-e1**2-e3**2,2*(e2*e3-e1*e0)],
                            [2*(e1*e3-e2*e0),2*(e2*e3+e1*e0),e3**2+e0**2-e1**2-e2**2]])
-        pos_dot = angles @ np.array([[u],[v],[w]])
+        pos_dot = R @ np.array([[u],[v],[w]])
 
         # Position Dynamics
         first = np.array([[r*v-q*w],
@@ -175,9 +187,6 @@ class MavDynamics:
                          [Ro4*el + Ro8*n]])
         p_dot = prt1 + prt2
 
-        # collect the derivative of the states
-        # x_dot = np.array([[north_dot, east_dot,... ]]).T
-        # x_dot = np.array([[0,0,0,0,0,0,0,0,0,0,0,0,0]]).T
         x_dot = np.array([
     pos_dot[0], pos_dot[1], pos_dot[2],
     u_dot[0], u_dot[1], u_dot[2],

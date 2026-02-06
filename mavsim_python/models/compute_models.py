@@ -93,16 +93,17 @@ def compute_tf_model(mav, trim_state, trim_input):
 
     ###### TODO ######
     # define transfer function constants
-    a_phi1 = 0
-    a_phi2 = 0
-    a_theta1 = 0
-    a_theta2 = 0
-    a_theta3 = 0
+    a_phi1 = 0.5*MAV.rho*mav._Va**2*MAV.S_wing*MAV.b*MAV.C_p_p*MAV.b/(2*mav._Va)
+    a_phi2 = 0.5*MAV.rho*mav._Va**2*MAV.S_wing*MAV.b*MAV.C_p_delta_a
+    a_theta1 = MAV.rho*mav._Va**2*MAV.c*MAV.S_wing/(2*MAV.Jy)*MAV.C_m_q*MAV.c/(2*mav._Va)
+    a_theta2 = MAV.rho*mav._Va**2*MAV.c*MAV.S_wing/(2*MAV.Jy)*MAV.C_m_alpha
+    a_theta3 = MAV.rho*mav._Va**2*MAV.c*MAV.S_wing/(2*MAV.Jy)*MAV.C_m_delta_e
 
     # Compute transfer function coefficients using new propulsion model
-    a_V1 = 0
-    a_V2 = 0
-    a_V3 = 0
+    
+    a_V1 = MAV.rho*Va_trim*MAV.S_wing/MAV.mass*(MAV.C_D_0+MAV.C_D_alpha*alpha_trim+MAV.C_D_delta_e*trim_input.elevator)-(1/MAV.mass)*dT_dVa(mav,Va_trim,trim_input.throttle)
+    a_V2 = 1/MAV.mass*dT_ddelta_t(mav,Va_trim,trim_input.throttle)
+    a_V3 = MAV.gravity*np.cos(theta_trim-alpha_trim)
 
     return Va_trim, alpha_trim, theta_trim, a_phi1, a_phi2, a_theta1, a_theta2, a_theta3, a_V1, a_V2, a_V3
 
@@ -115,12 +116,36 @@ def compute_ss_model(mav, trim_state, trim_input):
     B = df_du(mav, x_euler, trim_input)
     # extract longitudinal states (u, w, q, theta, pd)
     A_lon = np.zeros((5,5))
+    A_lon[0] = A[3][:5] # place u row
+    A_lon[1] = A[5][:5] # place w row
+    A_lon[2] = A[10][:5] # place q row 
+    A_lon[3] = A[7][:5] # place theta row 
+    A_lon[4] = A[2][:5] # place pd row 
+
     B_lon = np.zeros((5,2))
+    B_lon[0] = B[3][:2] # place u row
+    B_lon[1] = B[5][:2] # place w row
+    B_lon[2] = B[10][:2] # place q row 
+    B_lon[3] = B[7][:2] # place theta row 
+    B_lon[4] = B[2][:2] # place pd row 
+
     # change pd to h
 
     # extract lateral states (v, p, r, phi, psi)
     A_lat = np.zeros((5,5))
+    A_lat[0] = A[4][5:10] # place v row
+    A_lat[1] = A[9][5:10] # place p row
+    A_lat[2] = A[11][5:10] # place r row 
+    A_lat[3] = A[6][5:10] # place phi row 
+    A_lat[4] = A[8][5:10] # place psi row     
+
     B_lat = np.zeros((5,2))
+    B_lat[0] = B[4][2:] # place v row
+    B_lat[1] = B[9][2:] # place p row
+    B_lat[2] = B[11][2:] # place r row 
+    B_lat[3] = B[6][2:] # place phi row 
+    B_lat[4] = B[8][2:] # place psi row  
+
     return A_lon, B_lon, A_lat, B_lat
 
 def euler_state(x_quat):
@@ -128,15 +153,33 @@ def euler_state(x_quat):
     # to x_euler with attitude represented by Euler angles
     
     ##### TODO #####
-    x_euler = np.zeros((12,1))
+    e0 = x_quat.item(6)
+    e1 = x_quat.item(7)
+    e2 = x_quat.item(8)
+    e3 = x_quat.item(9)
+    quaternion = np.array([e0,e1,e2,e3])
+    phi,theta,psi = quaternion_to_euler(quaternion)
+    # x_euler = np.zeros((12,1))
+    x_euler = x_quat
+    x_euler[6]=phi
+    x_euler[7]=theta
+    x_euler[8]=psi
+    x_euler = np.delete(x_euler,9)
     return x_euler
 
 def quaternion_state(x_euler):
     # convert state x_euler with attitude represented by Euler angles
     # to x_quat with attitude represented by quaternions
-
+    es = euler_to_quaternion(x_euler)
+    
     ##### TODO #####
     x_quat = np.zeros((13,1))
+    x_quat = x_euler
+    x_quat[6] = es[0]
+    x_quat[7] = es[1]
+    x_quat[8] = es[2]
+    x_quat=np.insert(x_quat, 9, es[3], axis=0)
+
     return x_quat
 
 def f_euler(mav, x_euler, delta):
@@ -178,13 +221,30 @@ def dT_dVa(mav, Va, delta_t):
     eps = 0.01
 
     ##### TODO #####
-    dT_dVa = 0
+    # Evaluate thrust at nominal throttle
+    thrust_0, _ = mav._motor_thrust_torque(Va, delta_t)
+    
+    # Evaluate thrust at perturbed throttle
+    thrust_eps, _ = mav._motor_thrust_torque(Va+eps, delta_t)
+    
+    # Finite difference approximation
+    dT_dVa = (thrust_eps - thrust_0) / eps
     return dT_dVa
 
+
+    
 def dT_ddelta_t(mav, Va, delta_t):
     # returns the derivative of motor thrust with respect to delta_t
     eps = 0.01
-
     ##### TODO #####
-    dT_ddelta_t = 0
+    # Evaluate thrust at nominal throttle
+    thrust_0, _ = mav._motor_thrust_torque(Va, delta_t)
+    
+    # Evaluate thrust at perturbed throttle
+    thrust_eps, _ = mav._motor_thrust_torque(Va, delta_t + eps)
+    
+    # Finite difference approximation
+    dT_ddelta_t = (thrust_eps - thrust_0) / eps
+    
     return dT_ddelta_t
+

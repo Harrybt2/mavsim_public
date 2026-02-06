@@ -164,7 +164,7 @@ xdot_pqr_c03 = np.array([
 # ======================================
 # ======================================
 ### 1st Case ###
-print(f"\n\t{tools.color.cyan("### 1st Case ###")}\n")
+print(f"\n\t{tools.color.cyan('### 1st Case ###')}\n")
 
 
 delta = MsgDelta()
@@ -175,26 +175,26 @@ delta.throttle = 0.5
 
 T_p, Q_p = mav._motor_thrust_torque(mav._Va, delta.throttle)
 # print("Propeller Forces and Torque", "\n")
-print(f"{       "T_p":>{ckfns.lpad}}: {ckfns.ck_err(T_p_c01, T_p)}")
-print(f"{       "Q_p":>{ckfns.lpad}}: {ckfns.ck_err(Q_p_c01, Q_p)}\n")
+print(f"{       'T_p':>{ckfns.lpad}}: {ckfns.ck_err(T_p_c01, T_p)}")
+print(f"{       'Q_p':>{ckfns.lpad}}: {ckfns.ck_err(Q_p_c01, Q_p)}\n")
 
 forces_moments = mav._forces_moments(delta)
 # print("Forces and Moments : Case 1", "\n")
-print(f"{      "fxyz":>{ckfns.lpad}}: {ckfns.ck_err(forces_c01,  forces_moments[:3, 0])}")
-print(f"{      "Mxyz":>{ckfns.lpad}}: {ckfns.ck_err(moments_c01, forces_moments[3:, 0])}\n")
+print(f"{      'fxyz':>{ckfns.lpad}}: {ckfns.ck_err(forces_c01,  forces_moments[:3, 0])}")
+print(f"{      'Mxyz':>{ckfns.lpad}}: {ckfns.ck_err(moments_c01, forces_moments[3:, 0])}\n")
 
 x_dot = mav._f(mav._state, forces_moments)
 # print("State Derivatives : Case 1", "\n")
-print(f"{ "x_ned_dot":>{ckfns.lpad}}: {ckfns.ck_err(xdot_ned_c01,  x_dot[:3,   0])}")
-print(f"{ "x_uvw_dot":>{ckfns.lpad}}: {ckfns.ck_err(xdot_uvw_c01,  x_dot[3:6,  0])}")
-print(f"{"x_quat_dot":>{ckfns.lpad}}: {ckfns.ck_err(xdot_quat_c01, x_dot[6:10, 0])}")
-print(f"{ "x_ned_dot":>{ckfns.lpad}}: {ckfns.ck_err(xdot_pqr_c01,  x_dot[10:,  0])}\n")
+print(f"{ 'x_ned_dot':>{ckfns.lpad}}: {ckfns.ck_err(xdot_ned_c01,  x_dot[:3,   0])}")
+print(f"{ 'x_uvw_dot':>{ckfns.lpad}}: {ckfns.ck_err(xdot_uvw_c01,  x_dot[3:6,  0])}")
+print(f"{'x_quat_dot':>{ckfns.lpad}}: {ckfns.ck_err(xdot_quat_c01, x_dot[6:10, 0])}")
+print(f"{ 'x_ned_dot':>{ckfns.lpad}}: {ckfns.ck_err(xdot_pqr_c01,  x_dot[10:,  0])}\n")
 
 
 # ======================================
 # ======================================
 ### 2nd Case ###
-print(f"\t{tools.color.cyan("### 2nd Case ###")}\n")
+print(f"\t{tools.color.cyan('### 2nd Case ###')}\n")
 
 
 delta.elevator = -0.15705144
@@ -220,26 +220,26 @@ mav._state = np.array([
 
 T_p, Q_p = mav._motor_thrust_torque(mav._Va, delta.throttle)
 # print("Propeller Forces and Torque", "\n")
-print(f"{       "T_p":>{ckfns.lpad}}: {ckfns.ck_err(T_p_c02, T_p)}")
-print(f"{       "Q_p":>{ckfns.lpad}}: {ckfns.ck_err(Q_p_c02, Q_p)}\n")
+print(f"{       'T_p':>{ckfns.lpad}}: {ckfns.ck_err(T_p_c02, T_p)}")
+print(f"{       'Q_p':>{ckfns.lpad}}: {ckfns.ck_err(Q_p_c02, Q_p)}\n")
 
 forces_moments = mav._forces_moments(delta)
 # print("Forces and Moments : Case 2" , "\n")
-print(f"{      "fxyz":>{ckfns.lpad}}: {ckfns.ck_err(forces_c02,    forces_moments[:3, 0])}")
-print(f"{      "Mxyz":>{ckfns.lpad}}: {ckfns.ck_err(moments_c02,   forces_moments[3:, 0])}\n")
+print(f"{      'fxyz':>{ckfns.lpad}}: {ckfns.ck_err(forces_c02,    forces_moments[:3, 0])}")
+print(f"{      'Mxyz':>{ckfns.lpad}}: {ckfns.ck_err(moments_c02,   forces_moments[3:, 0])}\n")
 
 x_dot = mav._f(mav._state, forces_moments)
 # print("State Derivatives : Case 2", "\n")
-print(f"{ "x_ned_dot":>{ckfns.lpad}}: {ckfns.ck_err(xdot_ned_c02,  x_dot[:3,   0])}")
-print(f"{ "x_uvw_dot":>{ckfns.lpad}}: {ckfns.ck_err(xdot_uvw_c02,  x_dot[3:6,  0])}")
-print(f"{"x_quat_dot":>{ckfns.lpad}}: {ckfns.ck_err(xdot_quat_c02, x_dot[6:10, 0])}")
-print(f"{ "x_ned_dot":>{ckfns.lpad}}: {ckfns.ck_err(xdot_pqr_c02,  x_dot[10:,  0])}\n")
+print(f"{ 'x_ned_dot':>{ckfns.lpad}}: {ckfns.ck_err(xdot_ned_c02,  x_dot[:3,   0])}")
+print(f"{ 'x_uvw_dot':>{ckfns.lpad}}: {ckfns.ck_err(xdot_uvw_c02,  x_dot[3:6,  0])}")
+print(f"{'x_quat_dot':>{ckfns.lpad}}: {ckfns.ck_err(xdot_quat_c02, x_dot[6:10, 0])}")
+print(f"{ 'x_ned_dot':>{ckfns.lpad}}: {ckfns.ck_err(xdot_pqr_c02,  x_dot[10:,  0])}\n")
 
 
 # ======================================
 # ======================================
 ### 3rd Case ###
-print(f"\t{tools.color.cyan("### 3rd Case ###")}\n")
+print(f"\t{tools.color.cyan('### 3rd Case ###')}\n")
 
 
 current_wind = np.array([
@@ -253,23 +253,23 @@ current_wind = np.array([
 
 mav._update_velocity_data(current_wind)
 # print("Wind Update" , "\n")
-print(f"{        "Va":>{ckfns.lpad}}: {ckfns.ck_err(Va_c03,    mav._Va)}")
-print(f"{     "alpha":>{ckfns.lpad}}: {ckfns.ck_err(alpha_c03, mav._alpha)}")
-print(f"{      "beta":>{ckfns.lpad}}: {ckfns.ck_err(beta_c03,  mav._beta)}\n")
+print(f"{        'Va':>{ckfns.lpad}}: {ckfns.ck_err(Va_c03,    mav._Va)}")
+print(f"{     'alpha':>{ckfns.lpad}}: {ckfns.ck_err(alpha_c03, mav._alpha)}")
+print(f"{      'beta':>{ckfns.lpad}}: {ckfns.ck_err(beta_c03,  mav._beta)}\n")
 
 T_p, Q_p = mav._motor_thrust_torque(mav._Va, delta.throttle)
 # print("Propeller Forces and Torque", "\n")
-print(f"{       "T_p":>{ckfns.lpad}}: {ckfns.ck_err(T_p_c03, T_p)}")
-print(f"{       "Q_p":>{ckfns.lpad}}: {ckfns.ck_err(Q_p_c03, Q_p)}\n")
+print(f"{       'T_p':>{ckfns.lpad}}: {ckfns.ck_err(T_p_c03, T_p)}")
+print(f"{       'Q_p':>{ckfns.lpad}}: {ckfns.ck_err(Q_p_c03, Q_p)}\n")
 
 forces_moments = mav._forces_moments(delta)
 # print("Forces and Moments : Case w/Wind" , "\n")
-print(f"{      "fxyz":>{ckfns.lpad}}: {ckfns.ck_err(forces_c03,    forces_moments[:3, 0])}")
-print(f"{      "Mxyz":>{ckfns.lpad}}: {ckfns.ck_err(moments_c03,   forces_moments[3:, 0])}\n")
+print(f"{      'fxyz':>{ckfns.lpad}}: {ckfns.ck_err(forces_c03,    forces_moments[:3, 0])}")
+print(f"{      'Mxyz':>{ckfns.lpad}}: {ckfns.ck_err(moments_c03,   forces_moments[3:, 0])}\n")
 
 x_dot = mav._f(mav._state, forces_moments)
 # print("State Derivatives : Case w/Wind", "\n")
-print(f"{ "x_ned_dot":>{ckfns.lpad}}: {ckfns.ck_err(xdot_ned_c03,  x_dot[:3,   0])}")
-print(f"{ "x_uvw_dot":>{ckfns.lpad}}: {ckfns.ck_err(xdot_uvw_c03,  x_dot[3:6,  0])}")
-print(f"{"x_quat_dot":>{ckfns.lpad}}: {ckfns.ck_err(xdot_quat_c03, x_dot[6:10, 0])}")
-print(f"{ "x_ned_dot":>{ckfns.lpad}}: {ckfns.ck_err(xdot_pqr_c03,  x_dot[10:,  0])}\n")
+print(f"{ 'x_ned_dot':>{ckfns.lpad}}: {ckfns.ck_err(xdot_ned_c03,  x_dot[:3,   0])}")
+print(f"{ 'x_uvw_dot':>{ckfns.lpad}}: {ckfns.ck_err(xdot_uvw_c03,  x_dot[3:6,  0])}")
+print(f"{'x_quat_dot':>{ckfns.lpad}}: {ckfns.ck_err(xdot_quat_c03, x_dot[6:10, 0])}")
+print(f"{ 'x_ned_dot':>{ckfns.lpad}}: {ckfns.ck_err(xdot_pqr_c03,  x_dot[10:,  0])}\n")

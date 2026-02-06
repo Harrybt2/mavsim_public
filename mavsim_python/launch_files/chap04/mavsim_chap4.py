@@ -39,15 +39,15 @@ end_time = 60
 print("Press 'Esc' to exit...")
 while sim_time < end_time:
     # ------- set control surfaces -------------
-    delta.elevator = -0.1248
-    delta.aileron = 0.001836
-    delta.rudder = -0.0003026
+    delta.elevator = 0.0 #-0.1248
+    delta.aileron = 0.0 # 0.001836
+    delta.rudder = 0.0 #-0.0003026
     delta.throttle = 0.6768
 
     # ------- physical system -------------
     current_wind = wind.update()  # get the new wind vector
     mav.update(delta, current_wind)  # propagate the MAV dynamics
-
+    test = mav.true_state
     # -------update viewer-------------
     viewers.update(
         sim_time,

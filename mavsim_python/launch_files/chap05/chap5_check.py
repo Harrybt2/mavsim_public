@@ -9,9 +9,12 @@ mavsimPy
 # ======================================
 # ======================================
 
+
 # standard lib
 import os
 import sys
+print("cwd:", os.getcwd())
+print("sys.path:", sys.path)
 # insert parent directory at beginning of python search path
 from pathlib import Path
 # sys.path.insert(0,os.fspath(Path(__file__).parents[2]))
