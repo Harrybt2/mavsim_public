@@ -21,9 +21,9 @@ class MavDynamics(MavDynamicsForces):
     def __init__(self, Ts):
         super().__init__(Ts)
         # store wind data for fast recall since it is used at various points in simulation
-        self._wind = np.array([[0.], [0.], [0.]])  # wind in NED frame in meters/sec
+        self._wind = np.array([[0.], [0.], [0.]]).flatten()  # wind in NED frame in meters/sec
         # store forces to avoid recalculation in the sensors function
-        self._forces = np.array([[0.], [0.], [0.]])
+        self._forces = np.array([[0.], [0.], [0.]]).flatten()
         self._Va = MAV.u0
         self._alpha = 0
         self._beta = 0
@@ -44,7 +44,7 @@ class MavDynamics(MavDynamicsForces):
             Ts is the time step between function calls.
         '''
         # get forces and moments acting on rigid bod
-        forces_moments = self._forces_moments(delta)
+        forces_moments = self._forces_moments(delta).flatten()
         super()._rk4_step(forces_moments)
         # update the airspeed, angle of attack, and side slip angles using new state
         self._update_velocity_data(wind)
@@ -83,7 +83,7 @@ class MavDynamics(MavDynamicsForces):
         # add the gust 
         wind_body += gust
         # convert total wind to world frame
-        self._wind = R.T @ wind_body
+        self._wind = (R.T @ wind_body).flatten()
         
        
         
@@ -93,7 +93,7 @@ class MavDynamics(MavDynamicsForces):
         # compute airspeed (self._Va = ?)
         V_a_in_b = np.array([[u-wind_body[0]],
                              [v-wind_body[1]],
-                             [w-wind_body[2]]])    
+                             [w-wind_body[2]]]).flatten()    
         # compute angle of attack (self._alpha = ?)
         self._Va = np.linalg.norm(V_a_in_b)
         self._alpha = np.atan(V_a_in_b[2]/V_a_in_b[0])
@@ -227,13 +227,13 @@ class MavDynamics(MavDynamicsForces):
         # map delta_t throttle command(0 to 1) into motor input voltage
         v_in = MAV.V_max * delta_t
         a = MAV.C_Q0*MAV.rho*np.power(MAV.D_prop,5)/((2*np.pi)**2)
-        b = (MAV.C_Q1*MAV.rho*np.power(MAV.D_prop,4)/(2*np.pi))*self._Va + MAV.KQ**2/MAV.R_motor
-        c = MAV.C_Q2*MAV.rho*np.power(MAV.D_prop,3)*self._Va**2-(MAV.KQ/MAV.R_motor)*v_in+MAV.KQ*MAV.i0
+        b = (MAV.C_Q1*MAV.rho*np.power(MAV.D_prop,4)/(2*np.pi))*Va + MAV.KQ**2/MAV.R_motor
+        c = MAV.C_Q2*MAV.rho*np.power(MAV.D_prop,3)*Va**2-(MAV.KQ/MAV.R_motor)*v_in+MAV.KQ*MAV.i0
 
         # Angular speed of propeller (omega_p = ?)
         Omega_op = (-b+np.sqrt(b**2-4*a*c))/(2*a)
 
-        J_op = 2*np.pi*self._Va / (Omega_op*MAV.D_prop)
+        J_op = 2*np.pi*Va / (Omega_op*MAV.D_prop)
         C_T = MAV.C_T2*J_op**2+MAV.C_T1*J_op+MAV.C_T0
         C_Q = MAV.C_Q2*J_op**2 + MAV.C_Q1*J_op+MAV.C_Q0
 

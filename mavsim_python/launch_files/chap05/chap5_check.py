@@ -17,7 +17,7 @@ print("cwd:", os.getcwd())
 print("sys.path:", sys.path)
 # insert parent directory at beginning of python search path
 from pathlib import Path
-# sys.path.insert(0,os.fspath(Path(__file__).parents[2]))
+sys.path.insert(0,os.fspath(Path(__file__).parents[2]))
 
 # 3rd party
 import numpy as np
@@ -287,6 +287,14 @@ print(f"{ "B_lat":>{ckfns.lpad}}: {B_lat_c01_res}\n")
 
 Va_trim, alpha_trim, theta_trim, a_phi1, a_phi2, a_theta1, a_theta2, a_theta3, \
     a_V1, a_V2, a_V3 = compute_tf_model(mav, trim_state, trim_input)
+
+# print(type(Va_trim), np.shape(Va_trim))
+# print(type(alpha_trim), np.shape(alpha_trim))
+# print(type(theta_trim), np.shape(theta_trim))
+# print(type(a_V1), np.shape(a_V1))
+# print(type(a_V2), np.shape(a_V2))
+# print(type(a_V3), np.shape(a_V3))
+
 
 comp_tf_mod_check = np.array([
     Va_trim,     alpha_trim,    theta_trim,
