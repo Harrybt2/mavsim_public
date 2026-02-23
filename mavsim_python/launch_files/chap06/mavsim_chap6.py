@@ -59,9 +59,9 @@ print("Press 'Esc' to exit...")
 while sim_time < end_time:
 
     # -------autopilot commands-------------
-    commands.airspeed_command = 25 #Va_command.square(sim_time)
-    commands.course_command = 0#course_command.square(sim_time)
-    commands.altitude_command = 100#altitude_command.square(sim_time)
+    commands.airspeed_command = Va_command.square(sim_time) # 25
+    commands.course_command = course_command.square(sim_time) # 0
+    commands.altitude_command = altitude_command.square(sim_time) # 100
 
     # -------autopilot-------------
     estimated_state = mav.true_state  # uses true states in the control

@@ -181,6 +181,7 @@ class MavDynamics(MavDynamicsForces):
         propeller_forces = np.array([[thrust_prop],[0],[0]])
         forces_xyz = gravity_forces.reshape(3,1) + lateral_forces.reshape(3,1) + longitudinal_forces.reshape(3,1) + propeller_forces.reshape(3,1)
         forces_xyz.reshape(3,1)
+        self._forces = forces_xyz
         fx = forces_xyz[0]
         fy = forces_xyz[1]
         fz = forces_xyz[2]

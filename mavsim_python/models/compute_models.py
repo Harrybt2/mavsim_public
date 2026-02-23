@@ -219,12 +219,23 @@ def f_euler(mav, x_euler, delta):
 
     # run quaternion to euler pertubring e0,e1,e2,e3  and divide, populate a 3x4 matrix 
     # that 3x4 multiplies dquat_dt populate that into Feuler[6:9]
-    deuler_dt = quaternion_to_euler(dquat_dt.flatten()) 
 
+    eps = 0.001
+    euler_angs= x_euler[6:9]
 
+    deuler_dt = np.zeros((len(euler_angs), len(dquat_dt)))
+    for i in range(len(dquat_dt)):
+        dquat_dt_eps = np.copy(dquat_dt) # copy all the e's
+        dquat_dt_eps[i] += eps # perturb one of the e's
+        euler_eps= quaternion_to_euler(dquat_dt_eps.flatten()) # find all the euler angles for the perturbed e
+        for j in range(len(euler_angs)): # for each of the euler angles, find the partial derivative with respect to the perturbed e
+            deuler_dt[j][i] = (euler_angs[j] - euler_eps[j]) / eps
 
+    f_euler_ = np.zeros((12, 1))
 
-    f_euler_ = euler_state(f_quat)
+    f_euler_[:6] = f_quat[:6]
+    f_euler_[6:9] = deuler_dt @ dquat_dt
+    f_euler_[9:] = f_quat[10:]
     # f_euler_[6:9] = f_euler_[6:9] * deuler_dt.reshape((3,1))
 
     # dEuler_dQuat = deuler_dt.reshape((3,1)) / dquat_dt.reshape((4,1))
@@ -244,7 +255,7 @@ def f_euler(mav, x_euler, delta):
     #     dEuler_dquat[:, i] = ((euler_eps - euler_0) / eps).flatten()
     
     # # Apply chain rule: dEuler/dt = dEuler/dquat @ dquat/dt
-    # f_euler_ = np.zeros((12, 1))
+    
     # f_euler_[:6] = f_quat[:6]  # position and velocity derivatives unchanged
     # f_euler_[6:9] = dEuler_dquat @ f_quat[6:10]  # attitude derivatives via chain rule
     # f_euler_[9:12] = f_quat[10:13]  # angular rate derivatives
