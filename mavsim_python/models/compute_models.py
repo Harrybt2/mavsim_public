@@ -216,25 +216,39 @@ def f_euler(mav, x_euler, delta):
     forces_moments = mav._forces_moments(delta)
     f_quat = mav._f(x_quat, forces_moments)
     dquat_dt = f_quat[6:10]
+    f_euler_ =euler_state(f_quat)
 
     # run quaternion to euler pertubring e0,e1,e2,e3  and divide, populate a 3x4 matrix 
     # that 3x4 multiplies dquat_dt populate that into Feuler[6:9]
 
     eps = 0.001
+    e = x_quat[6:10]
     euler_angs= x_euler[6:9]
+    phi = x_euler.item(6)
+    theta = x_euler.item(7)
+    psi = x_euler.item(8)
 
     deuler_dt = np.zeros((len(euler_angs), len(dquat_dt)))
+    dTheta_dquat = np.zeros((3,4))
     for i in range(len(dquat_dt)):
-        dquat_dt_eps = np.copy(dquat_dt) # copy all the e's
-        dquat_dt_eps[i] += eps # perturb one of the e's
-        euler_eps= quaternion_to_euler(dquat_dt_eps.flatten()) # find all the euler angles for the perturbed e
-        for j in range(len(euler_angs)): # for each of the euler angles, find the partial derivative with respect to the perturbed e
-            deuler_dt[j][i] = (euler_angs[j] - euler_eps[j]) / eps
+        tmp = np.zeros((4,1))
+        tmp[i][0] = eps
+        e_eps = (e+tmp)/np.linalg.norm(e+tmp)
+        phi_eps, theta_eps, psi_eps = quaternion_to_euler(e_eps)
+
+        dTheta_dquat[0][i] = (phi_eps - phi) / eps
+        dTheta_dquat[1][i] = (theta_eps - theta) / eps
+        dTheta_dquat[2][i] = (psi_eps - psi) / eps
+        # dquat_dt_eps = np.copy(dquat_dt) # copy all the e's
+        # dquat_dt_eps[i] += eps # perturb one of the e's
+        # euler_eps= quaternion_to_euler(dquat_dt_eps.flatten()) # find all the euler angles for the perturbed e
+        # for j in range(len(euler_angs)): # for each of the euler angles, find the partial derivative with respect to the perturbed e
+        #     deuler_dt[j][i] = (euler_angs[j] - euler_eps[j]) / eps
 
     f_euler_ = np.zeros((12, 1))
 
     f_euler_[:6] = f_quat[:6]
-    f_euler_[6:9] = deuler_dt @ dquat_dt
+    f_euler_[6:9] = np.copy(dTheta_dquat @ f_quat[6:10])
     f_euler_[9:] = f_quat[10:]
     # f_euler_[6:9] = f_euler_[6:9] * deuler_dt.reshape((3,1))
 

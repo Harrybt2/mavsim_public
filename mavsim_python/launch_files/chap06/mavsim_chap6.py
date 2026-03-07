@@ -59,6 +59,9 @@ print("Press 'Esc' to exit...")
 while sim_time < end_time:
 
     # -------autopilot commands-------------
+    # to tune roll, command dublet in the roll, everything else is 0
+    # repeat for the different parts
+    # do lateral, then longitudinal
     commands.airspeed_command = Va_command.square(sim_time) # 25
     commands.course_command = course_command.square(sim_time) # 0
     commands.altitude_command = altitude_command.square(sim_time) # 100

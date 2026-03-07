@@ -92,7 +92,7 @@ class ExtendedKalmanFilterContinuousDiscrete:
             # compute Jacobian of f with respect to x
             A = self.jacobian(self.f, self.xhat, u)
             # convert to discrete time models
-            A_d = np.eye(self.n) + self.Ts * A + ((self.Ts ** 2)/2.) * A @ A
+            A_d = np.eye(self.n) + self.Ts * A + ((self.Ts ** 2)/2.) * A @ A #discretized A matrix
             # compute Jacobian of f with respect to u
             G = self.jacobian_u(self.f, self.xhat, u)
             # update P with discrete time model
@@ -102,7 +102,7 @@ class ExtendedKalmanFilterContinuousDiscrete:
     def measurement_update(self, 
                            y: np.ndarray, 
                            u: np.ndarray, 
-                           h: Callable, 
+                           h: Callable, # create h functions for each measurement to pass in here
                            R: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
         '''
             Measurement update
