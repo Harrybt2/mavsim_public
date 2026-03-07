@@ -49,7 +49,7 @@ class Observer:
                 5**2,  # u
                 5**2,  # v
                 5**2,  # w
-                np.radians(2)**2,  # phi
+                np.radians(1.0)**2,  # phi
                 np.radians(10)**2,  # theta
                 np.radians(2)**2,  # psi
                 np.radians(10)**2,  # bx
@@ -105,9 +105,9 @@ class Observer:
         initial_measurements = MsgSensors()
         ##### TODO #####
         # put in correct value for alpha, between 0-1
-        self.lpf_gyro_x = AlphaFilter(alpha=0.9, y0=initial_measurements.gyro_x)
-        self.lpf_gyro_y = AlphaFilter(alpha=0.9, y0=initial_measurements.gyro_y)
-        self.lpf_gyro_z = AlphaFilter(alpha=0.9, y0=initial_measurements.gyro_z)
+        self.lpf_gyro_x = AlphaFilter(alpha=0.8, y0=initial_measurements.gyro_x)
+        self.lpf_gyro_y = AlphaFilter(alpha=0.8, y0=initial_measurements.gyro_y)
+        self.lpf_gyro_z = AlphaFilter(alpha=0.8, y0=initial_measurements.gyro_z)
         # these are for gating, code is currenyl cut out
         self.analog_threshold = stats.chi2.isf(q=0.01, df=3)
         self.pseudo_threshold = stats.chi2.isf(q=0.01, df=2)
