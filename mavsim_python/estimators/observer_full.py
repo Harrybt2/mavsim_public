@@ -32,12 +32,12 @@ class Observer:
                 (40.)**2,  # u
                 (40.)**2,  # v
                 (40.)**2,  # w
-                (20.)**2,  # phi
+                (40.)**2,  # phi
                 (30.)**2,  # theta
                 (20.)**2,  # psi
-                (20.)**2,  # bx
-                (20.)**2,  # by
-                (20.)**2,  # bz
+                (10.)**2,  # bx
+                (10.)**2,  # by
+                (10.)**2,  # bz
                 (20.)**2,  # wn
                 (20.)**2,  # we
                 ]),
@@ -50,10 +50,10 @@ class Observer:
                 5**2,  # v
                 5**2,  # w
                 np.radians(2)**2,  # phi
-                np.radians(2)**2,  # theta
+                np.radians(10)**2,  # theta
                 np.radians(2)**2,  # psi
                 np.radians(10)**2,  # bx
-                np.radians(10)**2,  # by
+                np.radians(10.0)**2,  # by
                 np.radians(10)**2,  # bz
                 3**2,  # wn
                 3**2,  # we
