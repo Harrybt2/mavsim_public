@@ -161,13 +161,13 @@ class EkfStateObserver:
         N = 20
         Tp = self.Ts/N
         for i in range(0,N):
-            self.xhat = self.xhat +  Tp* self.f(self.xhat,u_in)
-            A = self.A_jacobian(self.xhat, u_in)
+            xhat = self.xhat +  Tp* self.f(self.xhat,u_in)
+            A = self.A_jacobian(xhat, u_in)
             # B =  np.zeros((6,2)) # TODO I'm making this 0 b/c it wasn't in the form of this file, hopefully that's not wrong # self.B_jacobian(self.xhat, u_in)
             # Qu = np.zeros((6,2)) # TODO if B is non-zero, then this is for sure the wrong Q, should be Qu see pg 165?
             Ad = np.eye(6) + A * Tp + A**2 * Tp**2
-            self.P = Ad @ self.P @ Ad.T + Tp**2 * self.Q 
-        return self.xhat, self.P
+            P = Ad @ self.P @ Ad.T + Tp**2 * self.Q 
+        return xhat, P
 
     def measurement_update(self, xhat_minus, P_minus, y):
         """EKF measurement correction step.
