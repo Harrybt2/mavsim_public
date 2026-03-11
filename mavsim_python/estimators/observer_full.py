@@ -26,20 +26,20 @@ class Observer:
             f=self.f, 
             # we tune Q, P0, and R_psuedo
             Q = np.diag([
-                (20.)**2,  # pn
-                (20.)**2,  # pe
-                (10.)**2,  # pd
-                (40.)**2,  # u
-                (40.)**2,  # v
-                (40.)**2,  # w
-                (40.)**2,  # phi
-                (30.)**2,  # theta
-                (20.)**2,  # psi
-                (10.)**2,  # bx
-                (10.)**2,  # by
-                (10.)**2,  # bz
-                (20.)**2,  # wn
-                (20.)**2,  # we
+                (2.)**2,  # pn
+                (2.)**2,  # pe
+                (1.)**2,  # pd
+                (4.)**2,  # u
+                (4.)**2,  # v
+                (4.)**2,  # w
+                (4.)**2,  # phi
+                (3.)**2,  # theta
+                (2.)**2,  # psi
+                (1.)**2,  # bx
+                (1.)**2,  # by
+                (1.)**2,  # bz
+                (2.)**2,  # wn
+                (2.)**2,  # we
                 ]),
                 # put in standard deviations expected for different values in P0, start off bigger than you think with initial covariance (like 10**2 for position, angles)
             P0= np.diag([

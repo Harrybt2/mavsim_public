@@ -101,7 +101,7 @@ class MavDynamics(MavDynamicsForces):
         
         
         # compute sideslip angle (self._beta = ?)
-        self._beta = np.asin(V_a_in_b[1]/self._Va)
+        self._beta = np.asin(V_a_in_b[1]/np.linalg.norm(self._Va))
 
 
 

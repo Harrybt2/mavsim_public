@@ -74,7 +74,7 @@ while sim_time < end_time:
 
     # -------- physical system -------------
     current_wind = wind.update()  # get the new wind vector
-    current_wind = np.zeros((6,1))  # zero out the wind for testing
+    # current_wind = np.zeros((6,1))  # zero out the wind for testing
     mav.update(delta, current_wind)  # propagate the MAV dynamics
 
     # -------- update viewer -------------
