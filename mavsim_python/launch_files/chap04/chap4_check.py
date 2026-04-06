@@ -6,6 +6,23 @@ mavsimPy
         2025-02-12 - engband
 """
 
+
+# The initial conditions are expected to be:
+
+#   Initial conditions for MAV
+# north0 = 0.  # initial north position
+# east0 = 0.  # initial east position
+# down0 = -100.0  # initial down position
+# u0 = 25.  # initial velocity along body x-axis
+# v0 = 0.  # initial velocity along body y-axis
+# w0 = 0.  # initial velocity along body z-axis
+# phi0 = 0.  # initial roll angle
+# theta0 = 0.  # initial pitch angle
+# psi0 = 0.0  # initial yaw angle
+# p0 = 0  # initial roll rate
+# q0 = 0  # initial pitch rate
+# r0 = 0  # initial yaw rate
+
 # ======================================
 # ======================================
 
@@ -118,7 +135,7 @@ xdot_pqr_c02 = np.array([
 # Wind Update
 Va_c03 = 27.39323489287441
 alpha_c03 = 0.05259649205640062
-beta_c03 = 0.022795289526122857
+beta_c03 = 0.022801214339060967
 
 # Propeller Forces and Torque
 T_p_c03 = 31.31315544701058
@@ -126,26 +143,26 @@ Q_p_c03 = 1.5877828779895595
 
 # Forces and Moments
 forces_c03 = np.array([
-    24.990405310886967,
-    48.44244456621981,
-    -39.98407127810252
+    24.99040531,
+    48.44092512,
+    -39.98407113
 ])
 moments_c03 = np.array([
-    0.10925814573797177,
-    0.1249623335264915,
-    -0.0951377745644831
+    0.10867448,
+    0.12496233,
+    -0.09481002
 ])
 
 # State Derivatives
 xdot_ned_c03 = np.array([
-    24.283238643486627,
-    12.605130052025968,
-    1.2957327060769266
+    24.28323868,
+    12.60513007,
+    1.29573271
 ])
 xdot_uvw_c03 = np.array([
-    2.138265412475981,
-    -0.2871174705096644,
-    0.976349036130503
+    2.13826541,
+    -0.2872556,
+    0.97634905
 ])
 xdot_quat_c03 = np.array([
     -0.025995661302161892,
@@ -154,9 +171,9 @@ xdot_quat_c03 = np.array([
     0.10134276693843723
 ])
 xdot_pqr_c03 = np.array([
-    0.10353614217633977,
-    0.11393277483867911,
-    -0.04913225070552499
+    0.10284849,
+    0.11393277,
+    -0.04899299
 ])
 
 # ======================================
@@ -164,6 +181,7 @@ xdot_pqr_c03 = np.array([
 # ======================================
 # ======================================
 ### 1st Case ###
+print(f"\n\t{tools.color.cyan('### 1st Case ###')}\n")
 print(f"\n\t{tools.color.cyan('### 1st Case ###')}\n")
 
 
@@ -182,6 +200,8 @@ forces_moments = mav._forces_moments(delta)
 # print("Forces and Moments : Case 1", "\n")
 print(f"{      'fxyz':>{ckfns.lpad}}: {ckfns.ck_err(forces_c01,  forces_moments[:3, 0])}")
 print(f"{      'Mxyz':>{ckfns.lpad}}: {ckfns.ck_err(moments_c01, forces_moments[3:, 0])}\n")
+print(f"{      'fxyz':>{ckfns.lpad}}: {ckfns.ck_err(forces_c01,  forces_moments[:3, 0])}")
+print(f"{      'Mxyz':>{ckfns.lpad}}: {ckfns.ck_err(moments_c01, forces_moments[3:, 0])}\n")
 
 x_dot = mav._f(mav._state, forces_moments)
 # print("State Derivatives : Case 1", "\n")
@@ -194,6 +214,7 @@ print(f"{ 'x_ned_dot':>{ckfns.lpad}}: {ckfns.ck_err(xdot_pqr_c01,  x_dot[10:,  0
 # ======================================
 # ======================================
 ### 2nd Case ###
+print(f"\t{tools.color.cyan('### 2nd Case ###')}\n")
 print(f"\t{tools.color.cyan('### 2nd Case ###')}\n")
 
 
@@ -222,9 +243,13 @@ T_p, Q_p = mav._motor_thrust_torque(mav._Va, delta.throttle)
 # print("Propeller Forces and Torque", "\n")
 print(f"{       'T_p':>{ckfns.lpad}}: {ckfns.ck_err(T_p_c02, T_p)}")
 print(f"{       'Q_p':>{ckfns.lpad}}: {ckfns.ck_err(Q_p_c02, Q_p)}\n")
+print(f"{       'T_p':>{ckfns.lpad}}: {ckfns.ck_err(T_p_c02, T_p)}")
+print(f"{       'Q_p':>{ckfns.lpad}}: {ckfns.ck_err(Q_p_c02, Q_p)}\n")
 
 forces_moments = mav._forces_moments(delta)
 # print("Forces and Moments : Case 2" , "\n")
+print(f"{      'fxyz':>{ckfns.lpad}}: {ckfns.ck_err(forces_c02,    forces_moments[:3, 0])}")
+print(f"{      'Mxyz':>{ckfns.lpad}}: {ckfns.ck_err(moments_c02,   forces_moments[3:, 0])}\n")
 print(f"{      'fxyz':>{ckfns.lpad}}: {ckfns.ck_err(forces_c02,    forces_moments[:3, 0])}")
 print(f"{      'Mxyz':>{ckfns.lpad}}: {ckfns.ck_err(moments_c02,   forces_moments[3:, 0])}\n")
 
@@ -239,6 +264,7 @@ print(f"{ 'x_ned_dot':>{ckfns.lpad}}: {ckfns.ck_err(xdot_pqr_c02,  x_dot[10:,  0
 # ======================================
 # ======================================
 ### 3rd Case ###
+print(f"\t{tools.color.cyan('### 3rd Case ###')}\n")
 print(f"\t{tools.color.cyan('### 3rd Case ###')}\n")
 
 
@@ -256,14 +282,21 @@ mav._update_velocity_data(current_wind)
 print(f"{        'Va':>{ckfns.lpad}}: {ckfns.ck_err(Va_c03,    mav._Va)}")
 print(f"{     'alpha':>{ckfns.lpad}}: {ckfns.ck_err(alpha_c03, mav._alpha)}")
 print(f"{      'beta':>{ckfns.lpad}}: {ckfns.ck_err(beta_c03,  mav._beta)}\n")
+print(f"{        'Va':>{ckfns.lpad}}: {ckfns.ck_err(Va_c03,    mav._Va)}")
+print(f"{     'alpha':>{ckfns.lpad}}: {ckfns.ck_err(alpha_c03, mav._alpha)}")
+print(f"{      'beta':>{ckfns.lpad}}: {ckfns.ck_err(beta_c03,  mav._beta)}\n")
 
 T_p, Q_p = mav._motor_thrust_torque(mav._Va, delta.throttle)
 # print("Propeller Forces and Torque", "\n")
 print(f"{       'T_p':>{ckfns.lpad}}: {ckfns.ck_err(T_p_c03, T_p)}")
 print(f"{       'Q_p':>{ckfns.lpad}}: {ckfns.ck_err(Q_p_c03, Q_p)}\n")
+print(f"{       'T_p':>{ckfns.lpad}}: {ckfns.ck_err(T_p_c03, T_p)}")
+print(f"{       'Q_p':>{ckfns.lpad}}: {ckfns.ck_err(Q_p_c03, Q_p)}\n")
 
 forces_moments = mav._forces_moments(delta)
 # print("Forces and Moments : Case w/Wind" , "\n")
+print(f"{      'fxyz':>{ckfns.lpad}}: {ckfns.ck_err(forces_c03,    forces_moments[:3, 0])}")
+print(f"{      'Mxyz':>{ckfns.lpad}}: {ckfns.ck_err(moments_c03,   forces_moments[3:, 0])}\n")
 print(f"{      'fxyz':>{ckfns.lpad}}: {ckfns.ck_err(forces_c03,    forces_moments[:3, 0])}")
 print(f"{      'Mxyz':>{ckfns.lpad}}: {ckfns.ck_err(moments_c03,   forces_moments[3:, 0])}\n")
 

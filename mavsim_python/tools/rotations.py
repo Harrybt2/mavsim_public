@@ -109,6 +109,16 @@ def quaternion_to_rotation(quaternion: npt.NDArray[np.float64]) -> npt.NDArray[n
     e2 = quaternion.item(2)
     e3 = quaternion.item(3)
 
+    q = np.asarray(quaternion).reshape(-1)
+    if q.size != 4:
+        raise ValueError("Quaternion must have 4 elements.")
+
+    # Normalize quaternion (critical)
+    n = np.linalg.norm(q)
+    if n == 0:
+        raise ValueError("Zero-norm quaternion is invalid.")
+    e0, e1, e2, e3 = q / n
+
     R = np.array([[e1 ** 2.0 + e0 ** 2.0 - e2 ** 2.0 - e3 ** 2.0, 2.0 * (e1 * e2 - e3 * e0), 2.0 * (e1 * e3 + e2 * e0)],
                   [2.0 * (e1 * e2 + e3 * e0), e2 ** 2.0 + e0 ** 2.0 - e1 ** 2.0 - e3 ** 2.0, 2.0 * (e2 * e3 - e1 * e0)],
                   [2.0 * (e1 * e3 - e2 * e0), 2.0 * (e2 * e3 + e1 * e0), e3 ** 2.0 + e0 ** 2.0 - e1 ** 2.0 - e2 ** 2.0]])

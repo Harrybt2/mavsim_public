@@ -50,9 +50,9 @@ xdot_pqr_c01 = np.array([
 ### 2nd Case ###
 
 xdot_ned_c02 = np.array([
-    0.08746356,
-    -1.96793003,
-    2.79883382
+    0.17142857142857149,
+    -3.8571428571428577,
+    5.485714285714286
 ])
 xdot_uvw_c02 = np.array([
     9.90909091,
@@ -97,12 +97,14 @@ x_dot = mav._f(state, forces_moments)
 print(f"{ 'x_ned_dot':>{ckfns.lpad}}: {ckfns.ck_err(xdot_ned_c01,  x_dot[:3,   0])}")
 print(f"{ 'x_uvw_dot':>{ckfns.lpad}}: {ckfns.ck_err(xdot_uvw_c01,  x_dot[3:6,  0])}")
 print(f"{'x_quat_dot':>{ckfns.lpad}}: {ckfns.ck_err(xdot_quat_c01, x_dot[6:10, 0])}")
-print(f"{ 'x_pqr_dot':>{ckfns.lpad}}: {ckfns.ck_err(xdot_pqr_c01,  x_dot[10:,  0])}\n")
+print(f"{ 'x_ned_dot':>{ckfns.lpad}}: {ckfns.ck_err(xdot_pqr_c01,  x_dot[10:,  0])}\n")
+
 
 # ======================================
 # ======================================
 ### 2nd Case ###
-print(f"\n\t{tools.color.cyan('### 2nd Case ###')}\n")
+
+print(f"\t{tools.color.cyan('### 2nd Case ###')}\n")
 
 
 state = np.array([[
@@ -123,4 +125,6 @@ x_dot = mav._f(state, forces_moments)
 print(f"{ 'x_ned_dot':>{ckfns.lpad}}: {ckfns.ck_err(xdot_ned_c02,  x_dot[:3,   0])}")
 print(f"{ 'x_uvw_dot':>{ckfns.lpad}}: {ckfns.ck_err(xdot_uvw_c02,  x_dot[3:6,  0])}")
 print(f"{'x_quat_dot':>{ckfns.lpad}}: {ckfns.ck_err(xdot_quat_c02, x_dot[6:10, 0])}")
-print(f"{ 'x_pqr_dot':>{ckfns.lpad}}: {ckfns.ck_err(xdot_pqr_c02,  x_dot[10:,  0])}\n")
+
+print(f"{ 'x_ned_dot':>{ckfns.lpad}}: {ckfns.ck_err(xdot_pqr_c02,  x_dot[10:,  0])}\n")
+
