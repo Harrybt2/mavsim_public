@@ -134,10 +134,10 @@ class MavDynamics(MavDynamicsForces):
         
 
                 #input by user?
-        delta_e = delta.elevator
-        delta_a = delta.aileron#0.5*(delta_a_left - delta_a_right)
-        delta_r = delta.rudder
-        throttle = delta.throttle
+        delta_e = float(delta.elevator)
+        delta_a = float(delta.aileron)#0.5*(delta_a_left - delta_a_right)
+        delta_r = float(delta.rudder)
+        throttle = float(delta.throttle)
         
         thrust_prop, torque_prop = self._motor_thrust_torque(self._Va, throttle)
 

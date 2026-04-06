@@ -37,19 +37,19 @@ viewers = ViewManager(path=True,
 #quitter = QuitListener()
 
 # path definition
-# path = MsgPath(
-#     type='line', 
-#     airspeed = 25,
-#     line_origin = np.array([[0.0, 0.0, -100.0]]).T,
-#     line_direction = np.array([[0.5, 1.0, 0.0]]).T,
-#     )
 path = MsgPath(
-    type='orbit', 
+    type='line', 
     airspeed = 25,
-    orbit_center = np.array([[0.0, 0.0, -100.0]]).T,
-    orbit_radius = 200.0,
-    orbit_direction = 'CCW', # 'CCW',
+    line_origin = np.array([[0.0, 0.0, -100.0]]).T,
+    line_direction = np.array([[0.5, 1.0, 0.0]]).T,
     )
+# path = MsgPath(
+#     type='orbit', 
+#     airspeed = 25,
+#     orbit_center = np.array([[1.0, 1.0, -100.0]]).T,
+#     orbit_radius = 200.0,
+#     orbit_direction = 'CCW', # 'CW',
+#     )
 # path = MsgPath(
 #     type='helix', 
 #     airspeed = 25,
@@ -73,7 +73,7 @@ while sim_time < end_time:
 
     # -------path follower-------------
     autopilot_commands = path_follower.update(path, estimated_state)
-    #autopilot_commands = path_follower.update(path, mav.true_state)  # for debugging
+    # autopilot_commands = path_follower.update(path, mav.true_state)  # for debugging
 
     # -------autopilot-------------
     delta, commanded_state = autopilot.update(autopilot_commands, estimated_state)

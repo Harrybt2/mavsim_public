@@ -11,7 +11,7 @@ import numpy as np
 # load message types
 from message_types.msg_state import MsgState
 import parameters.aerosonde_parameters as MAV
-from tools.rotations import Quaternion2Euler, Quaternion2Rotation
+from tools.rotations import quaternion_to_euler, quaternion_to_rotation
 
 
 class TargetDynamics:

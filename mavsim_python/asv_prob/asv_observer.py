@@ -149,7 +149,7 @@ class EkfStateObserver:
 
         return C
 
-    def propagate(self, u_in):
+    def propagate(self, xhat, u_in):
         """EKF prediction/propagation step.
 
         TODO:
@@ -161,7 +161,7 @@ class EkfStateObserver:
         N = 20
         Tp = self.Ts/N
         for i in range(0,N):
-            xhat = self.xhat +  Tp* self.f(self.xhat,u_in)
+            xhat = xhat +  Tp* self.f(self.xhat,u_in)
             A = self.A_jacobian(xhat, u_in)
             # B =  np.zeros((6,2)) # TODO I'm making this 0 b/c it wasn't in the form of this file, hopefully that's not wrong # self.B_jacobian(self.xhat, u_in)
             # Qu = np.zeros((6,2)) # TODO if B is non-zero, then this is for sure the wrong Q, should be Qu see pg 165?
@@ -180,14 +180,14 @@ class EkfStateObserver:
         # from slide 35 chptr 8
         #TODO wrap chi here I think, see observer.py hw
         y[-1] = wrap_angle(y[-1])
-        y_hat = self.h(xhat_minus)
+        h_minus = self.h(xhat_minus)
         Ci = self.C_jacobian(xhat_minus)
         Si = self.R + Ci @ P_minus @ Ci.T
         Li = P_minus @ Ci.T @ np.linalg.inv(Si)
-        self.xhat = self.xhat + Li @ (y-y_hat)
-        self.P = (np.eye(6) - Li @ Ci) @ P_minus @ (np.eye(6) - Li @ Ci).T + Li @ self.R @ Li.T
+        xhat = self.xhat + Li @ (y-h_minus)
+        P = (np.eye(6) - Li @ Ci) @ P_minus @ (np.eye(6) - Li @ Ci).T + Li @ self.R @ Li.T
 
-        return self.xhat, self.P
+        return xhat, P
 
     def update(self, inp):
         """Run one EKF step.
@@ -213,12 +213,12 @@ class EkfStateObserver:
             pass # this is just to have a debug break point
         if t % 1.0 == 0: # we're at a multiple of 20
             #first find what the propogation expects the x_hats to be, that's x_hat minus
-            xhat_minus, P_minus = self.propagate(u_in)
+            xhat_minus, P_minus = self.propagate(self.xhat, u_in)
             # then get the y from our new measured state
             y = self.h(self.xhat)
             self.xhat, self.P = self.measurement_update(xhat_minus, P_minus, y ) # TODO, idk if I need to pass in something else for xhatminus and Pminus, they should just be the last ones done before the sensor update so this should be fine...
         else:
-            self.xhat, self.P =self.propagate(u_in)
+            self.xhat, self.P =self.propagate(self.xhat, u_in)
             
         # keep track of the GPS meas to see if its been updated
 

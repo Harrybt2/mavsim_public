@@ -19,7 +19,7 @@ import parameters.planner_parameters as PLAN
 from models.mav_dynamics_sensors import MavDynamics
 from models.wind_simulation import WindSimulation
 from controllers.autopilot import Autopilot
-from estimators.observer import Observer
+from estimators.observer_full import Observer
 from planners.path_follower import PathFollower
 # from chap11.path_manager_cycle import PathManager
 from planners.path_manager import PathManager
@@ -41,8 +41,8 @@ viewers = ViewManager(waypoint=True,
 # waypoint definition
 from message_types.msg_waypoints import MsgWaypoints
 waypoints = MsgWaypoints()
-#waypoints.type = 'straight_line'
-#waypoints.type = 'fillet'
+# waypoints.type = 'straight_line'
+# waypoints.type = 'fillet'
 waypoints.type = 'dubins'
 Va = PLAN.Va0
 waypoints.add(np.array([[0, 0, -100]]).T, Va, np.radians(0), np.inf, 0, 0)
@@ -52,18 +52,18 @@ waypoints.add(np.array([[1000, 1000, -100]]).T, Va, np.radians(-135), np.inf, 0,
 
 # initialize the simulation time
 sim_time = SIM.start_time
-end_time = 300
+end_time = 600
 
 # main simulation loop
 print("Press 'Esc' to exit...")
 while sim_time < end_time:
     # -------observer-------------
     measurements = mav.sensors()  # get sensor measurements
-    estimated_state = observer.update(measurements)  # estimate states from measurements
-    # estimated_state = mav.true_state  # uses true states in the control
+    # estimated_state = observer.update(measurements)  # estimate states from measurements
+    estimated_state = mav.true_state  # uses true states in the control
 
     # -------path manager-------------
-    path = path_manager.update(waypoints, estimated_state, PLAN.R_min)
+    path = path_manager.update(waypoints, PLAN.R_min,  estimated_state)
 
     # -------path follower-------------
     autopilot_commands = path_follower.update(path, estimated_state)
@@ -92,6 +92,7 @@ while sim_time < end_time:
 
     # -------increment time-------------
     sim_time += SIM.ts_simulation
+    # time.sleep(.001)
 
 # close viewers
 viewers.close(dataplot_name="ch11_data_plot")

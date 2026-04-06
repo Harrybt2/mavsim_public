@@ -196,3 +196,8 @@ def hat(omega: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
                           [-b, a, 0]])
     return omega_hat
 
+def inertial_to_path(chi_q):
+    R = np.array([[np.cos(chi_q), np.sin(chi_q), 0],
+                  [-np.sin(chi_q), np.cos(chi_q), 0],
+                  [0,             0,              1]])
+    return R

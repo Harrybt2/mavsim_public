@@ -9,7 +9,7 @@ mavsim_python
 import os, sys
 # insert parent directory at beginning of python search path
 from pathlib import Path
-sys.path.insert(0,os.fspath(Path(__file__).parents[1]))
+sys.path.insert(0,os.fspath(Path(__file__).parents[2]))
 # use QuitListener for Linux or PC <- doesn't work on Mac
 #from tools.quit_listener import QuitListener
 import pyqtgraph as pg
@@ -20,13 +20,13 @@ from models.camera import Camera
 from models.target_dynamics import TargetDynamics
 from models.mav_dynamics_camera import MavDynamics
 from models.gimbal import Gimbal
-from control.autopilot import Autopilot
-from estimation.observer import Observer
-from estimation.geolocation import Geolocation
+from controllers.autopilot import Autopilot
+from estimators.observer_full import Observer
+from estimators.geolocation import Geolocation
 from viewers.geolocation_viewer import GeolocationViewer
-from planning.path_planner import PathPlanner
-from planning.path_follower import PathFollower
-from planning.path_manager import PathManager
+from planners.path_planner import PathPlanner
+from planners.path_follower import PathFollower
+from planners.path_manager import PathManager
 from viewers.data_viewer import DataViewer
 from viewers.mav_world_camera_viewer import MAVWorldCameraViewer
 from viewers.camera_viewer import CameraViewer

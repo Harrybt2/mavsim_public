@@ -18,8 +18,8 @@ class WindSimulation:
             sigma_v = 1.06
             sigma_w = 0.7
         else:
-            sigma_u = 0.0
-            sigma_v = 0.0
+            sigma_u = 3.0
+            sigma_v = -3.0
             sigma_w = 0.0
 
         
