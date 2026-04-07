@@ -16,7 +16,7 @@ class Gimbal:
     def pointAtGround(self, mav):
         az_d = 0 # these are the command angles in this scenario, down
         el_d = np.radians(-90)
-        # proportional control for gimbal
+        # proportional control for gimbal slide 16
         u_az = CAM.k_az*(az_d- CAM.az0)    ####### TODO ######
         u_el = CAM.k_el*(el_d - CAM.el0)    ####### TODO ######
         return( np.array([[u_az], [u_el]]) )
@@ -36,10 +36,10 @@ class Gimbal:
         # ell is assumed to be aligned in the body frame
         # given current azimuth and elevation angles of the gimbal
         # compute control inputs to align gimbal
-
+        ## TODO ## change kaz, kel in the camera paramters (it is orders of magnitude too big)
         # eq 13.13-13.15
         az_d = 0   ####### TODO ######
-        el_d = 0    ####### TODO ######
+        el_d = np.atan2(-ell_Z/np.sqrt(ell_y**2+ell_x**2))  # this could also be the -sin thing, but atan is a little more numerically stable
         # proportional control for gimbal
         u_az = 0    ####### TODO ######
         u_el = 0    ####### TODO ######

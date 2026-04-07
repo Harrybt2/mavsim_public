@@ -1,4 +1,4 @@
-The objective of this assignment is to implement algorithms 7 and 8 for
+The objective of this assignment is to implement algorithms 8 and 9 for
 following a set of waypoints denoted as W, and algorithm 10 for following a
 set of configurations denoted as P. The input to the path manager is either
 W or P, and the output is the path definition

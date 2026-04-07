@@ -33,5 +33,5 @@ class MsgState:
         self.bx = 0.      # gyro bias along roll axis in radians/sec
         self.by = 0.      # gyro bias along pitch axis in radians/sec
         self.bz = 0.      # gyro bias along yaw axis in radians/sec
-        self.camera_az = 0.  # camera azimuth angle
-        self.camera_el = np.radians(-90)  # camera elevation angle
+        self.gimbal_az = 0.  # camera azimuth angle
+        self.gimbal_el = np.radians(-90)  # camera elevation angle

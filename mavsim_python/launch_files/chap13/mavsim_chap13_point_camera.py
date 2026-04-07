@@ -12,26 +12,20 @@ from pathlib import Path
 sys.path.insert(0,os.fspath(Path(__file__).parents[2]))
 # use QuitListener for Linux or PC <- doesn't work on Mac
 #from tools.quit_listener import QuitListener
-import pyqtgraph as pg
 import parameters.simulation_parameters as SIM
-import parameters.planner_parameters as PLAN
 from models.wind_simulation import WindSimulation
-from models.camera import Camera
 from models.target_dynamics import TargetDynamics
 from models.mav_dynamics_camera import MavDynamics
+from models.camera import Camera
 from models.gimbal import Gimbal
 from controllers.autopilot import Autopilot
-from estimators.observer_full import Observer
+from estimators.observer import Observer
 from estimators.geolocation import Geolocation
-from viewers.geolocation_viewer import GeolocationViewer
-from planners.path_planner import PathPlanner
 from planners.path_follower import PathFollower
-from planners.path_manager import PathManager
-from viewers.data_viewer import DataViewer
-from viewers.mav_world_camera_viewer import MAVWorldCameraViewer
-from viewers.camera_viewer import CameraViewer
+from planners.path_manager_follow_target import PathManager
 from message_types.msg_world_map import MsgWorldMap
 from message_types.msg_waypoints import MsgWaypoints
+from viewers.view_manager import ViewManager
 
 #quitter = QuitListener()
 
@@ -136,8 +130,3 @@ while sim_time < SIM.end_time:
 
     # -------increment time-------------
     sim_time += SIM.ts_simulation
-
-
-
-
-

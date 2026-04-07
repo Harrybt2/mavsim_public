@@ -1,14 +1,31 @@
-13.1 Implement the gimbal pointing algorithm described in section 13.2.
-planner_parameters.py so that the buildings have a maximum
-height of one meter, and modify the path planner so that the MAV
-moves between two fixed locations.  Implement the gimbal pointing algorithm given
-by equations (13.13) and (13.14).
+• 13.1 Gimbal Pointing
 
-- Implement the functions in gimbal.py
+  In this project, you will implement the camera gimbal pointing algorithm and verify that the gimbal remains pointed at a ground target while the MAV flies along a simple, fixed route.
 
-13.2 Implement the geolocation algorithms described in section 13.3. Use
-the gimbal-pointing routine developed in the previous problem to point
-the gimbal at the target. 
+  1. In parameters/planner_parameters.py, modify the map settings so that the
+     maximum building height is 1 meter.
+  2. Modify the path-planning logic so that the MAV flies between two fixed locations instead of using the default planner behavior.
+  3. In models/gimbal.py, implement the gimbal-pointing algorithm described in
+     Section 13.2 using equations (13.13) and (13.14).
+  4. Run the simulation and verify that the gimbal tracks the target throughout the flight.
 
-- Implement the functions in geolocation.py 
-- Record or demonstrate your work.
+    What you should observe:
+
+  - The MAV follows the assigned fixed route
+  - The camera field of view remains directed toward the target
+  - The target stays near the center of the image 
+
+  13.2 Geolocation
+
+  In this problem, you will use the gimbal-pointing routine from Project 13.1 and implement the target geolocation algorithm.
+
+  1. Use your gimbal-pointing implementation from Project 13.1 so that the camera remains pointed at the target.
+  2. In estimators/geolocation.py, implement the geolocation algorithm described in
+     Section 13.3.
+  3. Run the simulation and compare the estimated target position with the true target position.
+
+  What you should observe:
+
+  - The gimbal remains pointed at the target
+  - The estimated target position follows the true target position reasonably closely
+  - Estimation error should remain bounded and should decrease when the target stays in view

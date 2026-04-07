@@ -62,7 +62,7 @@ class Geolocation:
         # system input is mav state
         u = np.array([
             
-            ######## TODO ########
+            ######## TODO ######## pull out what you need for your state
 
             ])    
         xhat, P = self.ekf.propagate_model(u)

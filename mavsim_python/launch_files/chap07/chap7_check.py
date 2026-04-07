@@ -5,7 +5,6 @@ mavsimPy
 """
 
 # standard lib
-
 import os
 import sys
 from pathlib import Path
