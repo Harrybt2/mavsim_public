@@ -269,5 +269,5 @@ class MavDynamics(MavDynamicsForces):
         self.true_state.bx = 0
         self.true_state.by = 0
         self.true_state.bz = 0
-        self.true_state.camera_az = 0
-        self.true_state.camera_el = 0
+        self.true_state.gimbal_az = 0
+        self.true_state.gimbal_el = 0

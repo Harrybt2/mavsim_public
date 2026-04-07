@@ -4,11 +4,13 @@ mavsim: camera viewer (for chapter 13)
     - Update history:
         4/15/2019 - RWB
         3/31/2022 - RWB
+        7/13/2023 - RWB
 """
 import numpy as np
+
 import matplotlib.pyplot as plt
 import parameters.camera_parameters as CAM
-from tools.rotations import euler_to_rotation
+#from tools.rotations import Euler2Rotation
 from message_types.msg_camera import MsgCamera
 
 class CameraViewer:
@@ -29,13 +31,13 @@ class CameraViewer:
         self.yellow = np.array([1., 1., 0., 1])
         self.orange = np.array([255, 102, 0, 255])/255.
 
-    def updateDisplay(self, projected_points):
+    def update(self, projected_points):
         # draw plot elements: cart, bob, rod
         self.drawTargetOnScreen(projected_points)
         # Set initialization flag to False after first call
         if self.plot_initialized is False:
             self.plot_initialized = True
-        plt.pause(0.001)
+        plt.pause(0.00001)
 
     def drawTargetOnScreen(self, projected_points):
         patch = []

@@ -3,6 +3,7 @@ mavsim_python: drawing tools
     - Beard & McLain, PUP, 2012
     - Update history:
         3/30/2022 - RWB
+        7/13/2023 - RWB
 """
 import numpy as np
 from numpy import cos, sin
@@ -30,7 +31,7 @@ class DrawFov:
                                  drawEdges=True,  # draw edges between mesh elements
                                  smooth=False,  # speeds up rendering
                                  computeNormals=False)  # speeds up rendering
-        self.fov.setGLOptions('translucent')
+        #self.fov.setGLOptions('translucent')
         self.fov.setGLOptions('additive')
         # ============= options include
         # opaque        Enables depth testing and disables blending
@@ -51,10 +52,10 @@ class DrawFov:
     def getTransformedMesh(self, state):
         mav_position = np.array([[state.north], [state.east], [-state.altitude]])  # NED coordinates
         # attitude of mav as a rotation matrix R from body to inertial
-        R = euler_to_rotation(state.phi, state.theta, state.psi)
-        Rcam = euler_to_rotation(0, state.camera_el, state.camera_az)
+        R_b2i = euler_to_rotation(state.phi, state.theta, state.psi)
+        R_g2b = euler_to_rotation(0, state.gimbal_el, state.gimbal_az)
         # rotate and translate points defining mav
-        rotated_points = self.rotatePoints(self.rotatePoints(self.fov_points, Rcam), R)
+        rotated_points = self.rotatePoints(self.fov_points, R_b2i @ R_g2b)
         projected_points = self.projectOnGroundPlane(rotated_points, mav_position)
         # convert North-East Down to East-North-Up for rendering
         R = np.array([[0, 1, 0], [1, 0, 0], [0, 0, -1]])

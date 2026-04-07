@@ -148,6 +148,7 @@ class ViewManager:
             waypoints,
             radius)
         self.app.processEvents()
+
     def close(self, dataplot_name: str=[], sensorplot_name: str=[]):
         # Save an Image of the Plot
         if self.save_plots_flag:

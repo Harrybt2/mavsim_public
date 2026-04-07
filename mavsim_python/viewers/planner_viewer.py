@@ -43,13 +43,13 @@ class PlannerViewer:
     def draw_tree_and_map(self, world_map, tree, waypoints, smoothed_waypoints,
                            radius, dubins_path=DubinsParameters()):
         blue = np.array([[30, 144, 255, 255]])/255.
-        red = np.array([[204, 0, 0,255]])/255.
-        green = np.array([[0, 153, 51,255]])/255.
+        red = np.array([[204, 0, 0, 255]])/255.
+        green = np.array([[0, 153, 51, 255]])/255.
         self.window.clear()
         DrawMap(world_map, self.window)
         # draw things to the screen
         for i in range(1, tree.num_waypoints):
-            if waypoints.type!='dubins': # dubins_path == None:
+            if waypoints.type != 'dubins':
                 points = self.get_straight_line_points(tree, i)
             else:
                 points = self.get_dubins_points(tree,i,radius,dubins_path)

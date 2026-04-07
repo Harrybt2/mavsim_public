@@ -139,5 +139,5 @@ class MavDynamics(MavDynamicsNoSensors):
         self.true_state.bx = SENSOR.gyro_x_bias
         self.true_state.by = SENSOR.gyro_y_bias
         self.true_state.bz = SENSOR.gyro_z_bias
-        self.true_state.camera_az = self._state.item(13)
-        self.true_state.camera_el = self._state.item(14)
+        self.true_state.gimbal_az = self._state.item(13)
+        self.true_state.gimbal_el = self._state.item(14)
